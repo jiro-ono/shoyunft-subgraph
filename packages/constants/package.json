@@ -1,0 +1,15 @@
+{
+  "name": "const",
+  "version": "1.0.0",
+  "description": "Constants",
+  "license": "MIT",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "codegen": "true",
+    "build": "true",
+    "prepare:mainnet": "mustache ../../config/mainnet.json index.template.ts > index.ts",
+    "prepare:matic": "mustache ../../config/matic.json index.template.ts > index.ts",
+    "prepare:rinkeby": "mustache ../../config/rinkeby.json index.template.ts > index.ts"
+  }
+}

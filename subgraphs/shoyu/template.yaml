@@ -1,0 +1,90 @@
+specVersion: 0.0.3
+description: ShoyuFactory
+repository: https://github.com/shoyunft/shoyunft-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+    - kind: ethereum/contract
+      name: ShoyuFactory
+      network: {{ network }}
+      source:
+        address: '{{ address }}'
+        abi: TokenFactory
+        startBlock: {{ startBlock }}
+      mapping:
+        kind: ethereum/events
+        apiVersion: 0.0.4
+        language: wasm/assemblyscript
+        file: ./src/mappings/shoyu-factory.ts
+        entities:
+          - ShoyuFactory
+          - NFT721
+          - NFT1155
+          - SocialToken
+        abis:
+          - name: TokenFactory
+            file: ../../node_modules/@shoyunft/contracts/abis/TokenFactory.json
+          - name: NFT721V0
+            file: ../../node_modules/@shoyunft/contracts/abis/NFT721V0.json
+          - name: NFT1155V0
+            file: ../../node_modules/@shoyunft/contracts/abis/NFT1155V0.json
+          - name: SocialTokenV0
+            file: ../../node_modules/@shoyunft/contracts/abis/SocialTokenV0.json
+        eventHandlers:
+          - event: SetBaseURI721(string)
+            handler: setBaseURI721
+          - event: SetBaseURI1155(string)
+            handler: setBaseURI1155
+          - event: SetProtocolFeeRecipient(address)
+            handler: setProtocolFeeRecipient
+          - event: SetOperationalFee(uint8)
+            handler: setOperationalFee
+          - event: SetOperationalFeeRecipient(address)
+            handler: setOperationalFeeRecipient
+          - event: SetDeployerWhitelisted(address,bool)
+            handler: setDeployerWhitelisted
+          - event: SetStrategyWhitelisted(address,bool)
+            handler: setStrategyWhitelisted
+          - event: DeployNFT721AndMintBatch(indexed address,indexed address,string,string,uint256[],address,uint8)
+            handler: deployNFT721AndMintBatch
+          - event: DeployNFT721AndPark(indexed address,indexed address,string,string,uint256,address,uint8)
+            handler: deployNFT721AndPark
+          - event: DeployNFT1155AndMintBatch(indexed address,indexed address,uint256[],uint256[],address,uint8)
+            handler: deployNFT1155AndMintBatch
+          - event: DeploySocialToken(indexed address,indexed address,string,string,indexed address,uint256)
+            handler: deploySocialToken
+templates:
+  - kind: ethereum/contract
+    name: NFT721Contract
+    network: {{ network }}
+    source:
+      abi: NFT721V0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/nft721.ts
+      entities:
+        - NFT721Contract
+      abis:
+        - name: TokenFactory
+          file: ../../node_modules/@shoyunft/contracts/abis/TokenFactory.json
+        - name: NFT721V0
+          file: ../../node_modules/@shoyunft/contracts/abis/NFT721V0.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: ownerShipTrasferred
+        - event: ParkTokenIds(uint256)
+          handler: parkTokenIds
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: transfer
+        - event: Burn(indexed uint256,indexed uint256,bytes32)
+          handler: burn
+        - event: SetRoyaltyFeeRecipient(address)
+          handler: setRoyaltyFeeRecipient
+        - event: SetRoyaltyFee(uint8)
+          handler: setRoyaltyFee
+        - event: SetTokenURI(indexed uint256,string)
+          handler: setTokenURI
+        - event: SetBaseURI(string)
+          handler: setBaseURI

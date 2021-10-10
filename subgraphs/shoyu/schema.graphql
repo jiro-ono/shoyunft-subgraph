@@ -1,0 +1,51 @@
+type ShoyuFactory @entity {
+  # Contract address
+  id: ID!
+
+  protocolFeeRecipient: Bytes!
+  protocolFee: Int!
+  operationalFeeRecipient: Bytes!
+  operationalFee: Int!
+  baseURI721: String!
+  baseURI1155: String!
+
+  nft721Contracts: [NFT721Contract!] @derivedFrom(field: "factory")
+  nft721ContractsCount: Int!
+}
+
+type NFT721Contract @entity {
+  # Contract address
+  id: ID!
+
+  factory: ShoyuFactory
+  baseURI: String
+
+  owner: Bytes
+  name: String
+  symbol: String
+  royaltyFeeRecipient: Bytes
+  royaltyFee: Int
+
+  nft721s: [NFT721!] @derivedFrom(field: "contract")
+  totalSupply: Int
+}
+
+type NFT721 @entity {
+  # address-tokenId
+  id: ID!
+  contract: NFT721Contract!
+  currentOwner: Bytes!
+  # add past owners list
+
+  uri: String!
+}
+
+type NFT1155 @entity {
+  # Contract address
+  id: ID!
+}
+
+type SocialToken @entity {
+  # Contract address
+  id: ID!
+}
